@@ -12,4 +12,10 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["python", "main.py"]
+RUN mkdir /ConjBot
+
+WORKDIR /ConjBot
+
+COPY start.sh /start.sh
+
+CMD ["/bin/bash", "/start.sh"]
