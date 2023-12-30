@@ -3,9 +3,9 @@ import logging
 import parser
 import voc
 import make_keyboard
+import os
 from aiogram.types import ReplyKeyboardRemove
 from string import digits, punctuation
-from config_reader import config
 from aiogram import Bot, Dispatcher, types, Router, F
 from aiogram.filters.command import Command
 from aiogram.fsm.state import StatesGroup, State
@@ -129,7 +129,7 @@ def get_result_message():
 
 
 async def main():
-    bot = Bot(token=config.bot_token.get_secret_value())
+    bot = Bot(token=os.environ.get("TOKEN"))
     dp = Dispatcher()
     dp.include_router(bot_route)
 
