@@ -78,7 +78,7 @@ async def get_tense_msg(message: types.message, state: FSMContext):
 
 @bot_route.message(Conj.get_word, F.text)
 async def get_word_msg(message: types.message, state: FSMContext):
-    if check_word(message.text.strip()):
+    if check_word(message.text.strip().lower()):
         await state.update_data(get_word=message.text.strip())
         await message.answer("Ok. Choose the mood.", reply_markup=make_keyboard.mood_keyboard(voc.mood))
         await state.set_state(Conj.get_mood)
