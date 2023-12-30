@@ -48,20 +48,20 @@ async def cancel_message(message: types.message, state=FSMContext):
 @bot_route.message(Conj.get_mood)
 async def get_tense_msg(message: types.message, state: FSMContext):
     if message.text != "Back":
-        global val_list
-        val_list = valid_tense(message.text)
-        await state.update_data(get_mood=message.text)
-        await message.answer(f"Accepted {message.text}", reply_markup=make_keyboard.keyboard(val_list))
-        await state.set_state(Conj.get_tense)
+        if message.text in voc.mood:
+            global val_list
+            val_list = valid_tense(message.text)
+            await state.update_data(get_mood=message.text)
+            await message.answer(f"Accepted {message.text}", reply_markup=make_keyboard.keyboard(val_list))
+            await state.set_state(Conj.get_tense)
+        else:
+            await message.answer("Sorry I don't know what do you mean...")
     else:
         await message.answer("We're already back.\nReselect the mood.")
 
 @bot_route.message(Conj.get_tense)
 async def get_tense_msg(message: types.message, state: FSMContext):
-    if message.text == "Back":
-        await message.answer("Choose the mood.", reply_markup=make_keyboard.mood_keyboard(voc.mood))
-        await state.set_state(Conj.get_mood)
-    else:
+    if message.text != "Back":
         await state.update_data(get_tense=list(filter(lambda sub: message.text in sub, val_list))[0])
         global data
         data = await state.get_data()
@@ -69,6 +69,10 @@ async def get_tense_msg(message: types.message, state: FSMContext):
         await message.answer(**add_text.as_kwargs(), reply_markup=ReplyKeyboardRemove())
         await message.answer(get_result_message())
         await state.clear()
+    else:
+        await message.answer("Choose the mood.", reply_markup=make_keyboard.mood_keyboard(voc.mood))
+        await state.set_state(Conj.get_mood)
+
 
 
 
