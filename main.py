@@ -113,7 +113,7 @@ async def valid_tense(text):
 
 
 async def get_result_message(data):
-    logging.INFO(f"{data['get_mood']}, {data['get_tense']}, {data['get_word']}")
+    logging.info(f"{data['get_mood']}, {data['get_tense']}, {data['get_word']}")
     content = parser.parse(data['get_mood'], data['get_tense'], data['get_word'])
     result_msg = ""
     if not content:
