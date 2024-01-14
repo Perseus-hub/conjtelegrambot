@@ -15,7 +15,6 @@ from aiogram.utils.formatting import Bold, Text
 
 bot_route = Router()
 val_list = None
-data = None
 
 
 class Conj(StatesGroup):
@@ -63,11 +62,10 @@ async def get_tense_msg(message: types.message, state: FSMContext):
 async def get_tense_msg(message: types.message, state: FSMContext):
     if message.text != "Back":
         await state.update_data(get_tense=list(filter(lambda sub: message.text in sub, val_list))[0])
-        global data
         data = await state.get_data()
         add_text = Text(Bold(data['get_word']), " in ", Bold(data['get_tense']), " is ...")
         await message.answer(**add_text.as_kwargs(), reply_markup=ReplyKeyboardRemove())
-        await message.answer(get_result_message())
+        await message.answer(await get_result_message(data))
         await state.clear()
     else:
         await message.answer("Choose the mood.", reply_markup=make_keyboard.mood_keyboard(voc.mood))
@@ -78,7 +76,7 @@ async def get_tense_msg(message: types.message, state: FSMContext):
 
 @bot_route.message(Conj.get_word, F.text)
 async def get_word_msg(message: types.message, state: FSMContext):
-    if check_word(message.text.strip().lower()):
+    if await check_word(message.text.strip().lower()):
         await state.update_data(get_word=message.text.strip().lower())
         await message.answer("Ok. Choose the mood.", reply_markup=make_keyboard.mood_keyboard(voc.mood))
         await state.set_state(Conj.get_mood)
@@ -86,7 +84,7 @@ async def get_word_msg(message: types.message, state: FSMContext):
         await message.answer("Sorry I don't know what do you mean...")
 
 
-def check_word(text):
+async def check_word(text):
     for item in digits:
         if text.find(item) != -1:
             return False
@@ -99,7 +97,7 @@ def check_word(text):
     return True
 
 
-def valid_tense(text):
+async def valid_tense(text):
     if text == "Indicativo":
         return voc.tense_Ind
     elif text == "Condicional":
@@ -114,7 +112,7 @@ def valid_tense(text):
         return voc.tense_Par
 
 
-def get_result_message():
+async def get_result_message(data):
     content = parser.parse(data['get_mood'], data['get_tense'], data['get_word'])
     result_msg = ""
     if not content:
