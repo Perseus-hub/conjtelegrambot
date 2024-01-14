@@ -116,7 +116,8 @@ async def get_result_message(data):
     content = parser.parse(data['get_mood'], data['get_tense'], data['get_word'])
     result_msg = ""
     if not content:
-        return "Nope... Not found.\nCheck your word or mood."
+        return "content is empty"
+        #return "Nope... Not found.\nCheck your word or mood."
     else:
         for k, v in content.items():
             if k == "":
