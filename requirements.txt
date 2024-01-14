@@ -19,3 +19,4 @@ yarl==1.9.4
 Flask==2.2.2
 gunicorn==20.1.0
 Werkzeug==2.2.2
+fake-useragent==1.4.0
