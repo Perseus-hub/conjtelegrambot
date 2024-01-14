@@ -49,7 +49,7 @@ async def get_tense_msg(message: types.message, state: FSMContext):
     if message.text != "Back":
         if message.text in voc.mood:
             global val_list
-            val_list = valid_tense(message.text)
+            val_list = await valid_tense(message.text)
             await state.update_data(get_mood=message.text)
             await message.answer(f"Accepted {message.text}", reply_markup=make_keyboard.keyboard(val_list))
             await state.set_state(Conj.get_tense)
